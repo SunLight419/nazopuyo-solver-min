@@ -1,5 +1,9 @@
 # nazopuyo-solver-min
-nazopuyo-solver-min is a strong tool to confronts nazopuyo harassment
+nazopuyo-solver-min is a strong(wish) tool to confronts nazopuyo harassment
+
+## 諸注意
+- 全体的に例外処理をしていないので配列外参照とか起こりまくるかもしれません
+- Windows10, Visual Studio 2022 で動作確認済み
 
 ## 各ソースコードの説明
 - main.cpp
