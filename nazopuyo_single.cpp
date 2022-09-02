@@ -56,21 +56,31 @@ void nazopuyo_single::set_totalNodes() {
 	}
 }
 
+std::string nazopuyo_single::make_nowKey() {
+	std::string nowString;
+	for (int i = 0; i < 6; ++i) {
+		nowString += howPut[i];
+		nowString += "+";
+	}
+	return nowString;
+}
 
-// âÇ DFS(ê[Ç≥óDêÊíTçı) Ç≈ëSíTçıÇ∑ÇÈ
+
+// Ëß£„Çí DFS(Ê∑±„ÅïÂÑ™ÂÖàÊé¢Á¥¢) „ÅßÂÖ®Êé¢Á¥¢„Åô„Çã
 void nazopuyo_single::nazoDFS(int idx) {
-	// idx = 0 Ç©ÇÁÉXÉ^Å[ÉgÇµÅA idx = ÉlÉNÉXÉgÇÃêî Ç…Ç»Ç¡ÇΩéûòAçΩÉVÉ~ÉÖÇçsÇ§
+	// idx = 0 „Åã„Çâ„Çπ„Çø„Éº„Éà„Åó„ÄÅ idx = „Éç„ÇØ„Çπ„Éà„ÅÆÊï∞ „Å´„Å™„Å£„ÅüÊôÇÈÄ£Èéñ„Ç∑„Éü„É•„ÇíË°å„ÅÜ
 	if (isAnswerFound) return;
 	if (idx > nextPuyoNum) return;
 	if (idx == nextPuyoNum) {
-		// ìríÜåoâﬂï\é¶óp
+		// ÈÄî‰∏≠ÁµåÈÅéË°®Á§∫Áî®
 		visitedNodes++;
 		if (visitedNodes % 10000 == 0) {
 			show();
 			cout << "Now Solving ...   ";
 			cout << ((double)visitedNodes / totalNodes * 100) << "[%] end" << endl;
-			// íTçıÇµÇΩÉmÅ[Éh/ëSÉmÅ[Éh
-			// é¿ç€ÇÕé}éÎÇËÇ™Ç†ÇÈÇÃÇ≈Ç†Ç≠Ç‹Ç≈ñ⁄à¿ÇÃäÑçá
+			// Êé¢Á¥¢„Åó„Åü„Éé„Éº„Éâ/ÂÖ®„Éé„Éº„Éâ
+			// ÂÆüÈöõ„ÅØÊûùÁã©„Çä„Åå„ÅÇ„Çã„ÅÆ„Åß„ÅÇ„Åè„Åæ„ÅßÁõÆÂÆâ„ÅÆÂâ≤Âêà
+			// hash „ÅÆÂá¶ÁêÜ„ÇíËøΩÂä†„Åó„Åü„ÅÆ„Åß„ÅÇ„Çì„Åæ„ÇäÊÑèÂë≥„Å™„Åè„Å™„Å£„Åü„Åã„ÇÇ (ÂÆüÈöõ„ÅÆÊé¢Á¥¢„Éé„Éº„Éâ„Å®‰πñÈõ¢„ÅåÂ§ß„Åç„ÅÑ)
 			cout << (visitedNodes / 1000) << "k Nodes visited" << endl;
 		}
 		// copy
@@ -79,14 +89,14 @@ void nazopuyo_single::nazoDFS(int idx) {
 
 		int nowChainNum = chain_loop(false);
 		if (nowChainNum == goalChainNum) {
-			// òAçΩêîÇ∆ñ⁄ïWòAçΩêîÇ™àÍívÇ∑ÇÍÇ∆èIÇÌÇËÇ‹Ç∑
+			// ÈÄ£ÈéñÊï∞„Å®ÁõÆÊ®ôÈÄ£ÈéñÊï∞„Åå‰∏ÄËá¥„Åô„Çã„Å®ÁµÇ„Çè„Çä„Åæ„Åô
 			isAnswerFound = true;
 			nazopuyo_single::copy_field(beforeCopy, field);
 			//nazopuyo_single::copy_field(beforeCopy, ansField);
 			return;
 		}
-		// íTçıÇ™ë±Ç≠èÍçáÅAÉRÉsÅ[ÇÉRÉsÅ[ÇµÇ‹Ç∑ÅB
-		// chain_loop(), chainSim() ÇÕîjâÛìIÇ»ëÄçÏÇ≈Ç∑ÅBÇæÇ©ÇÁÉRÉsÅ[ÇéÊÇ¡ÇƒÇ®Ç≠ïKóvÇ™Ç†Ç¡ÇΩÇÒÇ≈Ç∑ÇÀÅB
+		// Êé¢Á¥¢„ÅåÁ∂ö„ÅèÂ†¥Âêà„ÄÅ„Ç≥„Éî„Éº„Çí„Ç≥„Éî„Éº„Åó„Åæ„Åô„ÄÇ
+		// chain_loop(), chainSim() „ÅØÁ†¥Â£äÁöÑ„Å™Êìç‰Ωú„Åß„Åô„ÄÇ„Å†„Åã„Çâ„Ç≥„Éî„Éº„ÇíÂèñ„Å£„Å¶„Åä„ÅèÂøÖË¶Å„Åå„ÅÇ„Å£„Åü„Çì„Åß„Åô„Å≠„ÄÇ
 		nazopuyo_single::copy_field(beforeCopy, field);
 
 
@@ -95,117 +105,127 @@ void nazopuyo_single::nazoDFS(int idx) {
 
 	for (int j = 0; j < FIELD_WIDTH; ++j) {
 		if (isAnswerFound) return;
-		// forï∂Ç…Ç∑Ç◊Ç´?ÇæÇØÇ«è„éËÇ≠Ç¢Ç©Ç»Ç©Ç¡ÇΩ
-		if (at(j, 0) == ' ' && at(j, 1) == ' ') { // íºóéâ∫
+		// forÊñá„Å´„Åô„Åπ„Åç?„Å†„Åë„Å©‰∏äÊâã„Åè„ÅÑ„Åã„Å™„Åã„Å£„Åü
+		if (at(j, 0) == ' ' && at(j, 1) == ' ') { // Áõ¥ËêΩ‰∏ã
 			// A
 			// B
 			set_puyo(j, 0, nextPuyos[idx * 2]);
 			set_puyo(j, 1, nextPuyos[idx * 2 + 1]);
-			// ãÛîíÇ™Ç†ÇÈÇ©ÇämîFÇµÅAÇ’ÇÊÇÉZÉbÉgÇ∑ÇÈ
-			// äeîzóÒÇÃàÍî‘è„ÇÃîÒãÛîíÇÃÉCÉìÉfÉbÉNÉXÇéùÇ¡ÇƒÇ®Ç≠ï˚ñ@ÇÃÇŸÇ§Ç™Ç¢Ç¢Ç©Ç‡ÇµÇÍÇ»Ç¢
+
+			// hash Á≥ª„ÅÆÂá¶ÁêÜ (std::unordered_set „ÅØ hash „ÇíÁî®„ÅÑ„Å¶ÂÆüË£Ö„Åï„Çå„Å¶„ÅÑ„Çã)
+			howPut[j].push_back(nextPuyos[idx * 2]);
+			howPut[j].push_back(nextPuyos[idx * 2 + 1]);
+			string nowString = make_nowKey();
+			bool usedKeyFlag = usedKey.count(nowString);
+			// Á©∫ÁôΩ„Åå„ÅÇ„Çã„Åã„ÇíÁ¢∫Ë™ç„Åó„ÄÅ„Å∑„Çà„Çí„Çª„ÉÉ„Éà„Åô„Çã
+			// ÂêÑÈÖçÂàó„ÅÆ‰∏ÄÁï™‰∏ä„ÅÆÈùûÁ©∫ÁôΩ„ÅÆ„Ç§„É≥„Éá„ÉÉ„ÇØ„Çπ„ÇíÊåÅ„Å£„Å¶„Åä„ÅèÊñπÊ≥ï„ÅÆ„Åª„ÅÜ„Åå„ÅÑ„ÅÑ„Åã„ÇÇ„Åó„Çå„Å™„ÅÑ
 			fall(j);
-			if (idx + 1 < nextPuyoNum && isChain()) {
-				// ADDIEéÆé}éÎÇË
-				// Ç∑Ç◊ÇƒÇÃÇ’ÇÊÇíuÇ¢ÇƒÇ»Ç¢éûÇ…òAçΩÇ™î≠ê∂Ç∑ÇÈÇÃÇÕôííËéñè€
-				pop_top(j); // j óÒÇÃàÍî‘è„ÇÃÇ’ÇÊÇéÊÇÈ
+			if (idx + 1 < nextPuyoNum && isChain() || usedKeyFlag) {
+				// ADDIEÂºèÊûùÁã©„Çä
+				// „Åô„Åπ„Å¶„ÅÆ„Å∑„Çà„ÇíÁΩÆ„ÅÑ„Å¶„Å™„ÅÑÊôÇ„Å´ÈÄ£Èéñ„ÅåÁô∫Áîü„Åô„Çã„ÅÆ„ÅØÂâ™ÂÆö‰∫ãË±°
+				pop_top(j); // j Âàó„ÅÆ‰∏ÄÁï™‰∏ä„ÅÆ„Å∑„Çà„ÇíÂèñ„Çã
 				pop_top(j);
+				howPut[j].pop_back();
+				howPut[j].pop_back();
 			}
 			else {
-				// push ÇµÇƒëÄçÏÇµÇƒ pop Ç∑ÇÈÇÃÇ™ DFS ÇÃäÓñ{ìIÇ»ó¨ÇÍ
+				// push „Åó„Å¶Êìç‰Ωú„Åó„Å¶ pop „Åô„Çã„ÅÆ„Åå DFS „ÅÆÂü∫Êú¨ÁöÑ„Å™ÊµÅ„Çå
+				usedKey.insert(nowString);
 				nazopuyo_single::nazoDFS(idx + 1);
 				if (isAnswerFound) return;
+				// hash Á≥ª„ÅÆÂá¶ÁêÜ
 				pop_top(j);
 				pop_top(j);
+				howPut[j].pop_back();
+				howPut[j].pop_back();
 			}
 		}
 
-		if (j + 1 < FIELD_WIDTH && at(j, 0) == ' ' && at(j+1, 0) == ' ') { // AB
+		if (j + 1 < FIELD_WIDTH && at(j, 0) == ' ' && at(j + 1, 0) == ' ') { // AB
 			set_puyo(j, 0, nextPuyos[idx * 2]);
-			set_puyo(j+1, 0, nextPuyos[idx * 2 + 1]);
+			set_puyo(j + 1, 0, nextPuyos[idx * 2 + 1]);
 			fall(j);
 			fall(j + 1);
-			if (idx + 1 < nextPuyoNum && isChain()) {
+			howPut[j].push_back(nextPuyos[idx * 2]);
+			howPut[j + 1].push_back(nextPuyos[idx * 2 + 1]);
+			string nowString = make_nowKey();
+			bool usedKeyFlag = usedKey.count(nowString);
+			if (idx + 1 < nextPuyoNum && isChain() || usedKeyFlag) {
 				pop_top(j);
-				pop_top(j+1);
+				pop_top(j + 1);
+				howPut[j].pop_back();
+				howPut[j + 1].pop_back();
 			}
 			else {
+				usedKey.insert(nowString);
 				nazopuyo_single::nazoDFS(idx + 1);
 				if (isAnswerFound) return;
 				pop_top(j);
-				pop_top(j+1);
+				pop_top(j + 1);
+				howPut[j].pop_back();
+				howPut[j + 1].pop_back();
 			}
 		}
 
 		if ((nextPuyos[idx * 2] != nextPuyos[idx * 2 + 1]) && at(j, 0) == ' ' && at(j, 1) == ' ') {
-			// îΩâÒì]
-			// É]ÉçÇÃèÍçáÇÕÉXÉLÉbÉv
+			// ÂèçÂõûËª¢
+			// „Çæ„É≠„ÅÆÂ†¥Âêà„ÅØ„Çπ„Ç≠„ÉÉ„Éó
 			// B
 			// A
 			set_puyo(j, 0, nextPuyos[idx * 2]);
 			set_puyo(j, 1, nextPuyos[idx * 2 + 1]);
 			fall(j);
-			if (idx + 1 < nextPuyoNum && isChain()) {
+			howPut[j].push_back(nextPuyos[idx * 2]);
+			howPut[j].push_back(nextPuyos[idx * 2 + 1]);
+			string nowString = make_nowKey();
+			bool usedKeyFlag = usedKey.count(nowString);
+			if (idx + 1 < nextPuyoNum && isChain() || usedKeyFlag) {
 				pop_top(j);
 				pop_top(j);
+				howPut[j].pop_back();
+				howPut[j].pop_back();
 			}
 			else {
+				usedKey.insert(nowString);
 				nazopuyo_single::nazoDFS(idx + 1);
 				if (isAnswerFound) return;
 				pop_top(j);
 				pop_top(j);
-			}
-		
-		
-			if ((nextPuyos[idx * 2] != nextPuyos[idx * 2 + 1]) && j - 1 >= 0 && at(j, 0) == ' ' && at(j - 1, 0) == ' ') {
-				// BA
-				set_puyo(j, 0, nextPuyos[idx * 2]);
-				set_puyo(j - 1, 0, nextPuyos[idx * 2 + 1]);
-				fall(j);
-				fall(j - 1);
-				if (idx + 1 < nextPuyoNum && isChain()) {
-					pop_top(j);
-					pop_top(j - 1);
-				}
-				else {
-					nazopuyo_single::nazoDFS(idx + 1);
-					if (isAnswerFound) return;
-					pop_top(j);
-					pop_top(j - 1);
-				}
+				howPut[j].pop_back();
+				howPut[j].pop_back();
 			}
 		}
 
-		if (isAnswerFound) return;
+
+		if ((nextPuyos[idx * 2] != nextPuyos[idx * 2 + 1]) && j - 1 >= 0 && at(j, 0) == ' ' && at(j - 1, 0) == ' ') {
+			// BA
+			set_puyo(j, 0, nextPuyos[idx * 2]);
+			set_puyo(j - 1, 0, nextPuyos[idx * 2 + 1]);
+			fall(j);
+			fall(j - 1);
+			howPut[j].push_back(nextPuyos[idx * 2]);
+			howPut[j - 1].push_back(nextPuyos[idx * 2 + 1]);
+			string nowString = make_nowKey();
+			bool usedKeyFlag = usedKey.count(nowString);
+			if (idx + 1 < nextPuyoNum && isChain() || usedKeyFlag) {
+				pop_top(j);
+				pop_top(j - 1);
+				howPut[j].pop_back();
+				howPut[j - 1].pop_back();
+			}
+			else {
+				usedKey.insert(nowString);
+				nazopuyo_single::nazoDFS(idx + 1);
+				if (isAnswerFound) return;
+				pop_top(j);
+				pop_top(j - 1);
+				howPut[j].pop_back();
+				howPut[j - 1].pop_back();
+			}
+		}
 	}
 
-	/*for (int j = 0; j < FIELD_WIDTH; ++j) {
-		for (int k = 0; k < 4; ++k) {
-			if (isAnswerFound) return;
-			int par_x = j + parPos[k].first;
-			int par_y = parPos[k].second;
-			int child_x = j + childPos[k].first;
-			int child_y = childPos[k].second;
-			if (0 <= child_x && child_x < FIELD_WIDTH &&
-				at(par_x, par_y) == ' ' && at(child_x, child_y == ' ')) {
-				set_puyo(par_x, par_y, nextPuyos[idx * 2]);
-				set_puyo(child_x, child_y, nextPuyos[idx * 2 + 1]);
-				fall(par_x);
-				if (par_x != child_x) fall(child_x);
-				if (idx + 1 < nextPuyoNum && isChain()) {
-					pop_top(par_x);
-					pop_top(child_x);
-				} else {
-					nazoDFS(idx + 1);
-					if (isAnswerFound) return;
-					pop_top(par_x);
-					pop_top(child_x);
-				}
-			}
-		}
-	}*/
-
-
-
+	if (isAnswerFound) return;
 
 	if (idx == 0 && !isAnswerFound) {
 		cout << "There is NO ANSWER!!!" << endl;
@@ -228,12 +248,14 @@ void nazopuyo_single::solve_nazopuyo() {
 	auto sec = std::chrono::duration_cast<std::chrono::seconds>(t_end - t_start).count();
 	show(false);
 	cout << "Answer Found!: " << (double)sec << "[s]" << endl;
+	cout << "usedKey.size(): " << usedKey.size() << endl;
+	//cout << (sizeof(usedKey) * usedKey.size() / 8 / 1024 / 1024) << " MB" << endl;;
 	getchar();
 
 }
 
 
-// forï∂Ç≈é¿ëïÇµÇÊÇ§Ç∆ÇµÇΩÇØÇ«ñ≥óùÇæÇ¡ÇΩ
+// forÊñá„ÅßÂÆüË£Ö„Åó„Çà„ÅÜ„Å®„Åó„Åü„Åë„Å©ÁÑ°ÁêÜ„Å†„Å£„Åü
 //for (int j = 0; j < FIELD_WIDTH; ++j) {
 //	for (int k = 0; k < 4; ++k) {
 //		// is_ok
