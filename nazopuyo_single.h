@@ -2,33 +2,41 @@
 #include "FIELD_ARRAY.h"
 #include "CHAIN.h"
 #include <vector>
-// ‚È‚¼‚Õ‚æ‚ğ‰ğ‚­ƒNƒ‰ƒX(ƒVƒ“ƒOƒ‹ƒXƒŒƒbƒh)
-// ƒ}ƒ‹ƒ`ƒXƒŒƒbƒh‚ÍƒR[ƒh‚ª‚²‚¿‚á‚²‚¿‚á‚µ‚Ä‚Ì‚Å‚Æ‚è‚ ‚¦‚¸
-// pthread‚ğ—p‚¢‚Ä‚¢‚½‚ªstd::thread‚Å—Ç‚¢?
+#include <unordered_set>
+// ãªãã·ã‚ˆã‚’è§£ãã‚¯ãƒ©ã‚¹(ã‚·ãƒ³ã‚°ãƒ«ã‚¹ãƒ¬ãƒƒãƒ‰)
+// ãƒãƒ«ãƒã‚¹ãƒ¬ãƒƒãƒ‰ã¯ã‚³ãƒ¼ãƒ‰ãŒã”ã¡ã‚ƒã”ã¡ã‚ƒã—ã¦ã®ã§ã¨ã‚Šã‚ãˆãš
+// pthreadã‚’ç”¨ã„ã¦ã„ãŸãŒstd::threadã§è‰¯ã„?
 class nazopuyo_single : public CHAIN
 {
 public:
-	int nextPuyoNum; // ƒlƒNƒXƒg‚Õ‚æ‚Ì” ‚Tè‚Uè‚®‚ç‚¢‚©‚ç”š”­‚·‚é
-	int goalChainNum; // –Ú•W˜A½”
-	std::array<char, 20> nextPuyos; // ‚Æ‚è‚ ‚¦‚¸10è•ªŠm•Û
+	int nextPuyoNum; // ãƒã‚¯ã‚¹ãƒˆã·ã‚ˆã®æ•° ï¼•æ‰‹ï¼–æ‰‹ãã‚‰ã„ã‹ã‚‰çˆ†ç™ºã™ã‚‹
+	int goalChainNum; // ç›®æ¨™é€£é–æ•°
+	std::array<char, 20> nextPuyos; // ã¨ã‚Šã‚ãˆãš10æ‰‹åˆ†ç¢ºä¿
 
-	long long visitedNodes = 0; // ’Tõ‚µ‚½(nè‚·‚×‚Ä’u‚¢‚½)‹Ç–Ê‚Ì”
+	long long visitedNodes = 0; // æ¢ç´¢ã—ãŸ(næ‰‹ã™ã¹ã¦ç½®ã„ãŸ)å±€é¢ã®æ•°
 	long long totalNodes = 1;
-	bool isAnswerFound = false; // ‰ğ‚ªŒ©‚Â‚©‚Á‚½‚©‚Ç‚¤‚©
+	bool isAnswerFound = false; // è§£ãŒè¦‹ã¤ã‹ã£ãŸã‹ã©ã†ã‹
 
-	//std::array<char, FIELD_WIDTH* FIELD_HEIGHT> ansField; // “š‚¦—p‚ÌƒtƒB[ƒ‹ƒh
+	// æ¢ç´¢æ¸ˆã¿ã®ãƒãƒ¼ãƒ‰ã‚’è¨˜éŒ²ã™ã‚‹
+	// ãƒãƒ¼ãƒ‰ã®è¨˜éŒ²ã®ä»•æ–¹ã¯ä½•åˆ—ç›®ã«ä½•ã®ã·ã‚ˆã‚’ç½®ã„ãŸã‹( howPut )
+	// ã“ã‚Œã‚’ make_nowKey() ã§åˆæˆã—ã¦ usedKey ã«ã¶ã¡è¾¼ã‚€
+	std::unordered_set<std::string> usedKey;
+	std::array<std::string, FIELD_WIDTH> howPut;
+	std::string make_nowKey();
+
+	//std::array<char, FIELD_WIDTH* FIELD_HEIGHT> ansField; // ç­”ãˆç”¨ã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
 
 	void set_totalNodes();
 
-	// field ‚ğƒRƒs[‚·‚éŠÖ”
-	// ƒXƒ}[ƒg‚É‚·‚é•û–@‚í‚©‚ç‚ñ
+	// field ã‚’ã‚³ãƒ”ãƒ¼ã™ã‚‹é–¢æ•°
+	// ã‚¹ãƒãƒ¼ãƒˆã«ã™ã‚‹æ–¹æ³•ã‚ã‹ã‚‰ã‚“
 	void copy_field(std::array<char, FIELD_WIDTH* FIELD_HEIGHT>& from, std::array<char, FIELD_WIDTH* FIELD_HEIGHT>& to);
 	
 	void show_nextPuyos();
 
 	void set_nextPuyo();
 	void set_goalChainNum();
-	void solve_nazopuyo(); // Šî–{“I‚É‚Í‚±‚ê‚ğŒÄ‚Ño‚¹‚Î‘S•”‚â‚Á‚Ä‚­‚ê‚é
+	void solve_nazopuyo(); // åŸºæœ¬çš„ã«ã¯ã“ã‚Œã‚’å‘¼ã³å‡ºã›ã°å…¨éƒ¨ã‚„ã£ã¦ãã‚Œã‚‹
 
 	std::vector<std::pair<int, int>> parPos = {
 		{0, 0}, {0, 0}, {0, 1}, {0, 0},
@@ -38,8 +46,8 @@ public:
 		{0, 1}, {-1, 0}, {0, 0}, {1, 0},
 	};
 
-	// “ä‚Õ‚æ‚ğ[‚³—Dæ’Tõ‚Å‰ğ‚­
-	// idx: ‰½è–Ú‚Ì‘g‚İ‚Õ‚æ‚©
+	// è¬ã·ã‚ˆã‚’æ·±ã•å„ªå…ˆæ¢ç´¢ã§è§£ã
+	// idx: ä½•æ‰‹ç›®ã®çµ„ã¿ã·ã‚ˆã‹
 	void nazoDFS(int idx);
 };
 
