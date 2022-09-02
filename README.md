@@ -5,6 +5,14 @@ nazopuyo-solver-min is a strong(wish) tool to confronts nazopuyo harassment
 - 全体的に例外処理をしていないので配列外参照とか起こりまくるかもしれません
 - Windows10, Visual Studio 2022 で動作確認済み
 
+## 使い方
+- WASD で移動
+- 1: フィールドエディットモード
+  - {w, a, s, d} でカーソルを移動させ、{r, g, b, y, p, @(お邪魔), ' '(空白) } でぷよを挿入
+- 2: 連鎖シミュレーション
+- 3: 謎ぷよモード
+  - おじゃま非対応
+  - n連鎖のみ対応
 ## 各ソースコードの説明
 - main.cpp
   - メイン
