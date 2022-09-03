@@ -38,4 +38,4 @@ nazopuyo-solver-min is a strong(wish) tool to confronts nazopuyo harassment
 - 目安
   - 4手以下: 1秒
   - 5手: 1分
-  - 6手: 15分
+  - 6手: 25分
