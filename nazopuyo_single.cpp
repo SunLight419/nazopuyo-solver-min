@@ -57,12 +57,14 @@ void nazopuyo_single::set_totalNodes() {
 }
 
 std::string nazopuyo_single::make_nowKey() {
-	std::string nowString;
+	std::string nowString_;
 	for (int i = 0; i < 6; ++i) {
-		nowString += howPut[i];
-		nowString += "+";
+		nowString_ += howPut[i];
+		nowString_ += "+";
 	}
-	return nowString;
+	//cout << nowString_ << endl;
+	//Sleep(300);
+	return nowString_;
 }
 
 
@@ -72,6 +74,8 @@ void nazopuyo_single::nazoDFS(int idx) {
 	if (isAnswerFound) return;
 	if (idx > nextPuyoNum) return;
 	if (idx == nextPuyoNum) {
+		//show(); for begug
+		//getchar();
 		// 途中経過表示用
 		visitedNodes++;
 		if (visitedNodes % 10000 == 0) {
@@ -115,12 +119,12 @@ void nazopuyo_single::nazoDFS(int idx) {
 			// hash 系の処理 (std::unordered_set は hash を用いて実装されている)
 			howPut[j].push_back(nextPuyos[idx * 2]);
 			howPut[j].push_back(nextPuyos[idx * 2 + 1]);
-			string nowString = make_nowKey();
-			bool usedKeyFlag = usedKey.count(nowString);
+			string nowString0 = make_nowKey();
+			int usedKeyFlag0 = usedKey.count(nowString0);
 			// 空白があるかを確認し、ぷよをセットする
 			// 各配列の一番上の非空白のインデックスを持っておく方法のほうがいいかもしれない
 			fall(j);
-			if (idx + 1 < nextPuyoNum && isChain() || usedKeyFlag) {
+			if ((idx + 1 < nextPuyoNum && isChain()) || usedKeyFlag0) {
 				// ADDIE式枝狩り
 				// すべてのぷよを置いてない時に連鎖が発生するのは剪定事象
 				pop_top(j); // j 列の一番上のぷよを取る
@@ -130,9 +134,9 @@ void nazopuyo_single::nazoDFS(int idx) {
 			}
 			else {
 				// push して操作して pop するのが DFS の基本的な流れ
-				usedKey.insert(nowString);
 				nazopuyo_single::nazoDFS(idx + 1);
 				if (isAnswerFound) return;
+				usedKey.insert(nowString0);
 				// hash 系の処理
 				pop_top(j);
 				pop_top(j);
@@ -148,18 +152,18 @@ void nazopuyo_single::nazoDFS(int idx) {
 			fall(j + 1);
 			howPut[j].push_back(nextPuyos[idx * 2]);
 			howPut[j + 1].push_back(nextPuyos[idx * 2 + 1]);
-			string nowString = make_nowKey();
-			bool usedKeyFlag = usedKey.count(nowString);
-			if (idx + 1 < nextPuyoNum && isChain() || usedKeyFlag) {
+			string nowString1 = make_nowKey();
+			int usedKeyFlag1 = usedKey.count(nowString1);
+			if ((idx + 1 < nextPuyoNum && isChain()) || usedKeyFlag1) {
 				pop_top(j);
 				pop_top(j + 1);
 				howPut[j].pop_back();
 				howPut[j + 1].pop_back();
 			}
 			else {
-				usedKey.insert(nowString);
 				nazopuyo_single::nazoDFS(idx + 1);
 				if (isAnswerFound) return;
+				usedKey.insert(nowString1);
 				pop_top(j);
 				pop_top(j + 1);
 				howPut[j].pop_back();
@@ -172,22 +176,22 @@ void nazopuyo_single::nazoDFS(int idx) {
 			// ゾロの場合はスキップ
 			// B
 			// A
-			set_puyo(j, 0, nextPuyos[idx * 2]);
-			set_puyo(j, 1, nextPuyos[idx * 2 + 1]);
+			set_puyo(j, 1, nextPuyos[idx * 2]);		// 直落下の場合と同じ置き方をしてたので修正
+			set_puyo(j, 0, nextPuyos[idx * 2 + 1]);
 			fall(j);
-			howPut[j].push_back(nextPuyos[idx * 2]);
-			howPut[j].push_back(nextPuyos[idx * 2 + 1]);
-			string nowString = make_nowKey();
-			bool usedKeyFlag = usedKey.count(nowString);
-			if (idx + 1 < nextPuyoNum && isChain() || usedKeyFlag) {
+			howPut[j].push_back(nextPuyos[idx * 2 + 1]); // 直落下の場合と同じ置き方をしてたので修正
+			howPut[j].push_back(nextPuyos[idx * 2 ]);
+			string nowString2 = make_nowKey();
+			int usedKeyFlag2 = usedKey.count(nowString2);
+			if ((idx + 1 < nextPuyoNum && isChain()) || usedKeyFlag2) {
 				pop_top(j);
 				pop_top(j);
 				howPut[j].pop_back();
 				howPut[j].pop_back();
 			}
 			else {
-				usedKey.insert(nowString);
 				nazopuyo_single::nazoDFS(idx + 1);
+				usedKey.insert(nowString2);
 				if (isAnswerFound) return;
 				pop_top(j);
 				pop_top(j);
@@ -205,16 +209,16 @@ void nazopuyo_single::nazoDFS(int idx) {
 			fall(j - 1);
 			howPut[j].push_back(nextPuyos[idx * 2]);
 			howPut[j - 1].push_back(nextPuyos[idx * 2 + 1]);
-			string nowString = make_nowKey();
-			bool usedKeyFlag = usedKey.count(nowString);
-			if (idx + 1 < nextPuyoNum && isChain() || usedKeyFlag) {
+			string nowString3 = make_nowKey();
+			int usedKeyFlag3 = usedKey.count(nowString3);
+			if ((idx + 1 < nextPuyoNum && isChain()) || usedKeyFlag3) {
 				pop_top(j);
 				pop_top(j - 1);
 				howPut[j].pop_back();
 				howPut[j - 1].pop_back();
 			}
 			else {
-				usedKey.insert(nowString);
+				usedKey.insert(nowString3);
 				nazopuyo_single::nazoDFS(idx + 1);
 				if (isAnswerFound) return;
 				pop_top(j);
@@ -239,6 +243,8 @@ void nazopuyo_single::solve_nazopuyo() {
 	set_goalChainNum();
 	set_nextPuyo();
 	set_totalNodes();
+	usedKey.clear();
+	for (int i = 0; i < FIELD_WIDTH; ++i) howPut[i] = "";
 	cout << "LETS SOLVE NAZO PUYO!" << endl;
 	auto t_start = std::chrono::system_clock::now();
 	nazopuyo_single::nazoDFS(0);
@@ -249,6 +255,8 @@ void nazopuyo_single::solve_nazopuyo() {
 	show(false);
 	cout << "Answer Found!: " << (double)sec << "[s]" << endl;
 	cout << "usedKey.size(): " << usedKey.size() << endl;
+	for (int i = 0; i < FIELD_WIDTH; ++i) cout << i << "列目: " <<  howPut[i] << " ";
+	cout << endl;
 	//cout << (sizeof(usedKey) * usedKey.size() / 8 / 1024 / 1024) << " MB" << endl;;
 	getchar();
 
