@@ -34,3 +34,8 @@ nazopuyo-solver-min is a strong(wish) tool to confronts nazopuyo harassment
   - 以上のように、手数が増えるにつれ爆発的にノード数が増加する
 - ぷよぷよの連鎖数を求めるのは難しい(効率的なアルゴリズムが存在しない?)らしい
 - kenny式(有名な19連鎖の形)を1回シミュレートするのに 3ms 程かかる
+- Hash 機能の追加で速度が大幅に改善された
+- 目安
+  - 4手以下: 1秒
+  - 5手: 1分
+  - 6手: 15分
